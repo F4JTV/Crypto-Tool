@@ -1,0 +1,10 @@
+PyQt6>=6.4.0
+cryptography>=41.0.0
+# Algorithmes supportés:
+# - AES-128, AES-256 (robuste)
+# - ChaCha20 (robuste)
+# - Camellia-128, Camellia-256 (robuste)
+# - 3DES (legacy)
+# - Blowfish (legacy)
+# - RC4 (faible)
+# - XOR (faible)

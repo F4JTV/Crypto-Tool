@@ -3,7 +3,22 @@
 Outil de chiffrement/déchiffrement avancé avec interface PyQt6
 Supporte: AES-128, AES-256, ChaCha20, 3DES, Blowfish, Camellia, RC4, XOR
 Stockage sécurisé des clés avec chiffrement maître
+
+Copyright (C) 2026 F4JTV
+
+Ce programme est un logiciel libre : vous pouvez le redistribuer et/ou le
+modifier selon les termes de la Licence Publique Générale GNU telle que
+publiée par la Free Software Foundation, soit la version 3, soit (à votre
+choix) toute version ultérieure.
+
+Ce programme est distribué dans l'espoir qu'il sera utile, mais SANS AUCUNE
+GARANTIE, sans même la garantie implicite de QUALITÉ MARCHANDE ou
+d'ADÉQUATION À UN USAGE PARTICULIER. Voyez la Licence Publique Générale GNU
+pour plus de détails, dans le fichier LICENSE.txt qui accompagne ce
+programme, ou sur <https://www.gnu.org/licenses/>.
 """
+
+__version__ = "1.0.0"
 
 import sys
 import os
@@ -28,6 +43,36 @@ from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 from cryptography.hazmat.primitives import padding, hashes
 from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 from cryptography.hazmat.backends import default_backend
+
+
+# =============================================================================
+# RESSOURCES
+# =============================================================================
+
+def resource_root() -> str:
+    """Racine des ressources, en developpement comme en mode gele.
+
+    PyInstaller en mode « un dossier » extrait les donnees dans un
+    sous-dossier `_internal` dont le chemin est expose par `sys._MEIPASS`.
+    Le dossier du script n'est pas le bon repere dans ce cas : l'icone y
+    serait cherchee a cote de l'executable, ou elle ne se trouve pas.
+    """
+    if getattr(sys, "frozen", False) and hasattr(sys, "_MEIPASS"):
+        return sys._MEIPASS                       # type: ignore[attr-defined]
+    return os.path.dirname(os.path.abspath(__file__))
+
+
+def icon_path() -> Optional[str]:
+    """Chemin de l'icone de l'application, ou None si elle est absente.
+
+    L'absence n'est pas une erreur : lance depuis les sources sans avoir
+    execute make_icon.py, le programme doit demarrer quand meme.
+    """
+    for name in ("cryptotool.ico", "cryptotool.png"):
+        candidate = os.path.join(resource_root(), "assets", name)
+        if os.path.isfile(candidate):
+            return candidate
+    return None
 
 
 # =============================================================================
@@ -1217,15 +1262,35 @@ class MainWindow(QMainWindow):
 
 
 def main():
+    # Traite en tout premier : build_windows.ps1 lance l'executable gele avec
+    # --version pour verifier qu'il resout ses imports. Cela doit se terminer
+    # immediatement, sans ouvrir de fenetre ni toucher aux reglages.
+    if any(arg in ("--version", "-V") for arg in sys.argv[1:]):
+        print(f"Crypto Tool {__version__}")
+        print("Copyright (C) 2026 F4JTV")
+        print("Licence GPL-3.0 ou ulterieure "
+              "<https://www.gnu.org/licenses/gpl-3.0.html>")
+        print("Logiciel libre fourni SANS AUCUNE GARANTIE.")
+        return 0
+
     # Initialise la langue avant de créer l'application
     lang = get_system_language()
     Tr.set_language(lang)
-    
+
     app = QApplication(sys.argv)
+    app.setApplicationName("Crypto Tool")
+    app.setApplicationVersion(__version__)
+    app.setOrganizationName("CryptoTool")
+
+    icon = icon_path()
+    if icon:
+        from PyQt6.QtGui import QIcon
+        app.setWindowIcon(QIcon(icon))
+
     win = MainWindow()
     win.show()
-    sys.exit(app.exec())
+    return app.exec()
 
 
 if __name__ == "__main__":
-    main()
+    sys.exit(main())

@@ -1,0 +1,82 @@
+CRYPTO TOOL - A LIRE AVANT D'INSTALLER
+======================================
+
+
+CE QUE VOUS INSTALLEZ
+
+Crypto Tool chiffre et dechiffre du texte avec des algorithmes symetriques,
+et conserve vos cles dans un coffre protege par un mot de passe maitre.
+
+Le programme fonctionne entierement hors ligne. Il n'ouvre aucune connexion
+reseau, n'envoie rien nulle part, et n'a besoin d'aucun compte.
+
+
+LE MOT DE PASSE MAITRE
+
+Au premier lancement, le programme vous demande de creer un mot de passe
+maitre. Il derive de ce mot de passe la cle qui protege toutes les autres,
+par PBKDF2-SHA256 a 600 000 iterations.
+
+Ce mot de passe n'est stocke nulle part et ne peut pas etre reinitialise.
+Si vous l'oubliez, les cles du coffre sont definitivement perdues, et avec
+elles tout ce que vous aviez chiffre. C'est le prix d'un coffre qui ne
+comporte pas de porte de service.
+
+Notez vos cles importantes ailleurs, hors du programme.
+
+
+OU SONT RANGEES VOS CLES
+
+Dans le registre de Windows, sous :
+
+    HKEY_CURRENT_USER\Software\CryptoTool\CryptoToolPro
+
+Pas dans le dossier d'installation. Deux consequences utiles :
+
+  - une mise a jour ne peut pas effacer vos cles ;
+  - le coffre appartient a votre session Windows. Une installation « pour
+    tous les utilisateurs » ne partage pas les cles entre les comptes,
+    chaque compte a le sien.
+
+A la desinstallation, le coffre est conserve par defaut. Le desinstalleur
+vous propose de le supprimer, sans cocher la case : repondez Oui seulement
+si vous n'avez plus aucune donnee chiffree avec ces cles.
+
+
+ALGORITHMES FAIBLES
+
+RC4 et XOR sont presents pour l'interoperabilite avec de l'existant et pour
+l'etude. Ils n'offrent aucune protection reelle et l'interface les signale en
+rouge. 3DES et Blowfish sont anciens et signales en orange. Pour tout usage
+serieux, restez sur AES-256 ou ChaCha20.
+
+
+AVERTISSEMENT SMARTSCREEN
+
+Cet installateur n'est pas signe numeriquement. Windows SmartScreen affichera
+un avertissement au premier lancement. Cliquez sur « Informations
+complementaires » puis « Executer quand meme ».
+
+Un outil de chiffrement declenche par ailleurs plus souvent que la moyenne
+les heuristiques des antivirus, simplement parce qu'il manipule des cles et
+des donnees opaques. C'est un faux positif ; le code source accompagne le
+programme.
+
+
+LICENCE
+
+Crypto Tool est un logiciel libre sous GNU General Public License version 3
+ou ulterieure. Le texte complet est installe a cote du programme, dans
+LICENSE.txt, et la page suivante vous le presente.
+
+Cela vous donne le droit d'utiliser ce programme comme bon vous semble, de
+l'etudier, de le modifier et de le redistribuer. En contrepartie, si vous le
+redistribuez, sous forme de sources ou de binaire, vous devez transmettre
+ces memes libertes : mettre le code source correspondant a disposition, sous
+cette meme licence.
+
+Crypto Tool est lie a PyQt6, dont la version libre est sous GPL-3.0. Ce
+n'est donc pas seulement un choix : c'est la licence qui s'impose des lors
+qu'on distribue un binaire construit avec elle.
+
+LICENSE.txt liste aussi les composants tiers et leurs licences respectives.
